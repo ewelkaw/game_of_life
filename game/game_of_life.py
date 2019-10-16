@@ -14,6 +14,7 @@ from pygame.locals import *
 BOARD_SIZE = [16, 16]
 GAME_WINDOW_SIZE = (256, 256)
 FIELDS_VALUES = {"on": ("on", "x.png"), "off": ("off", "red_dot.png")}
+START_GAME_IMG = "start.png"
 IMAGES_PATH = Path(".").absolute().parent.joinpath("images")
 
 # on/off
@@ -31,6 +32,7 @@ OFF = SingleBoardField(
 
 pygame.init()
 WINDOW = pygame.display.set_mode(GAME_WINDOW_SIZE)
+CLOCK = pygame.time.Clock()
 
 
 def prepare_empty_board() -> list:
@@ -115,7 +117,7 @@ def draw_board(board: list):
     pygame.display.flip()
 
 
-def play(board: list, clock):
+def play(board: list):
     done = False
     while not done:
         board = epoch(board)
@@ -128,15 +130,13 @@ def play(board: list, clock):
             ):
                 done = True
                 break
-        clock.tick(2)
+        CLOCK.tick(2)
 
 
 def main(board_start_mode="random"):
-    clock = pygame.time.Clock()
-
     if board_start_mode == "user":
         board = prepare_empty_board()
-        pygame.display.set_caption("Game of Life - Setting ON fields")
+        pygame.display.set_caption("Press Enter to start the game")
         draw_board(board)
 
         done = False
@@ -156,23 +156,31 @@ def main(board_start_mode="random"):
                         board[x][y] = OFF
                     else:
                         board[x][y] = ON
-            clock.tick(10)
+            CLOCK.tick(10)
 
-    else:
+    elif board_start_mode == "random":
         board = prepare_random_board()
 
     pygame.display.set_caption("Game of Life")
     draw_board(board)
-    play(board, clock)
+    play(board)
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 2:
-        sys.exit(
-            "There is something wrong with args that you provide. We need only 'user' or nothing here."
-        )
-    if len(sys.argv) == 2:
-        if sys.argv[1] == "user":
-            main(sys.argv[1])
-    else:
-        main()
+    pygame.display.set_caption("How you want to start game")
+    img = pygame.image.load(str(IMAGES_PATH.joinpath(START_GAME_IMG)))
+    WINDOW.blit(img, (0, 0))
+    pygame.display.flip()
+
+    done = False
+    while not done:
+        for e in pygame.event.get():
+            if e.type == MOUSEBUTTONDOWN and e.button == 1:
+                if e.pos[1] in range(51, 102):
+                    board_start_mode = "user"
+                    done = True
+                if e.pos[1] in range(148, 199):
+                    board_start_mode = "random"
+                    done = True
+
+    main(board_start_mode)
