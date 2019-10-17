@@ -2,20 +2,20 @@
 
 """A well known game of life"""
 
-import sys
-from collections import namedtuple, defaultdict
-from itertools import product
 import random
-import pygame
+import sys
+from collections import defaultdict, namedtuple
+from itertools import product
 from pathlib import Path
 
+import pygame
 from pygame.locals import *
 
 BOARD_SIZE = [16, 16]
 GAME_WINDOW_SIZE = (256, 256)
 FIELDS_VALUES = {"on": ("on", "x.png"), "off": ("off", "red_dot.png")}
 START_GAME_IMG = "start.png"
-IMAGES_PATH = Path(".").absolute().parent.joinpath("images")
+IMAGES_PATH = Path(__file__).absolute().parent.parent.joinpath("images")
 
 # on/off
 SingleBoardField = namedtuple("SingleBoardField", ["state", "state_image"])
@@ -29,10 +29,6 @@ ON = SingleBoardField(state=FIELDS_VALUES["on"][0], state_image=FIELDS_VALUES["o
 OFF = SingleBoardField(
     state=FIELDS_VALUES["off"][0], state_image=FIELDS_VALUES["off"][1]
 )
-
-pygame.init()
-WINDOW = pygame.display.set_mode(GAME_WINDOW_SIZE)
-CLOCK = pygame.time.Clock()
 
 
 def prepare_empty_board() -> list:
@@ -167,6 +163,9 @@ def main(board_start_mode="random"):
 
 
 if __name__ == "__main__":
+    pygame.init()
+    WINDOW = pygame.display.set_mode(GAME_WINDOW_SIZE)
+    CLOCK = pygame.time.Clock()
     pygame.display.set_caption("How you want to start game")
     img = pygame.image.load(str(IMAGES_PATH.joinpath(START_GAME_IMG)))
     WINDOW.blit(img, (0, 0))

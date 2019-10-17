@@ -1,6 +1,9 @@
 # Game of life written in Pygame
 
-### HOW TO PLAY
+### 1. FIRST OF ALL
+```pip install -r requirements.txt```
+
+### 2. HOW TO PLAY
 ```
 cd game/
 python3 game_of_life.py
@@ -16,5 +19,5 @@ Enjoy :D
 
 ![play image](images/play.png)
 
-### TESTING
+### 3. TESTING
 ```python3 -m pytest tests/```
